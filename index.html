@@ -38,6 +38,7 @@ body {
 /* ---- NAV ---- */
 header {
   position: fixed;
+  left: 0;
   width: 100%;
   top: 0;
   z-index: 100;
@@ -281,7 +282,7 @@ section { padding: 80px 0; }
 /* ---- SKILLS ---- */
 .skills-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: 1.2rem;
 }
 .skill-group {
@@ -311,7 +312,7 @@ section { padding: 80px 0; }
 /* ---- PROJECTS ---- */
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
   gap: 1.5rem;
 }
 .project-card {
@@ -493,20 +494,96 @@ footer { border-top: 1px solid var(--border); padding: 1.8rem 0; }
 }
 #scrollTop:hover { border-color: var(--accent); }
 
+/* ---- MOBILE MENU TOGGLE ---- */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  width: 42px; height: 42px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+}
+.menu-toggle span {
+  display: block;
+  width: 18px; height: 2px;
+  background: var(--text);
+  transition: transform .25s, opacity .25s;
+}
+.menu-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.menu-toggle.open span:nth-child(2) { opacity: 0; }
+.menu-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
 /* ---- RESPONSIVE ---- */
+img, svg { max-width: 100%; }
+h1, h2, h3, p, li, a { overflow-wrap: anywhere; }
+
+/* Large desktop */
+@media (min-width: 1400px) {
+  .wrap { width: min(1180px, 90%); }
+  body { font-size: 17px; }
+}
+
+/* Tablet and below */
 @media (max-width: 900px) {
+  section { padding: 64px 0; }
+  .hero { min-height: auto; padding: 110px 0 56px; }
   .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; }
-  .hero-stats { flex-direction: row; }
+  .hero-stats { flex-direction: row; width: 100%; }
   .stat-box { flex: 1; border-bottom: none; border-right: 1px solid var(--border); }
   .stat-box:last-child { border-right: none; }
   .about-grid, .contact-wrap { grid-template-columns: 1fr; gap: 2.5rem; }
+  .section-header { margin-bottom: 2.2rem; }
 }
 
-@media (max-width: 640px) {
-  .nav-links { gap: 1rem; }
-  .nav-links li:nth-child(3), .nav-links li:nth-child(4) { display: none; }
-  .hero { padding-top: 90px; }
-  .stat-box { padding: 1rem; }
+/* Phone: hamburger menu */
+@media (max-width: 720px) {
+  .menu-toggle { display: flex; }
+  .nav-links {
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: .5rem 5%;
+    display: none;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links li a {
+    display: block;
+    padding: .9rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-links li:last-child a {
+    border: 1px solid var(--accent);
+    text-align: center;
+    margin: .9rem 0 .5rem;
+  }
+}
+
+/* Small phones */
+@media (max-width: 560px) {
+  body { font-size: 15px; }
+  .wrap { width: 92%; }
+  section { padding: 52px 0; }
+  .hero { padding-top: 96px; }
+  .hero-btns { flex-direction: column; }
+  .hero-btns a, .availability-card .btn-primary { width: 100%; justify-content: center; text-align: center; }
+  .hero-stats { flex-direction: column; }
+  .stat-box { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; border-right: none; border-bottom: 1px solid var(--border); padding: .9rem 1.2rem; }
+  .stat-box:last-child { border-bottom: none; }
+  .stat-label { margin-top: 0; }
+  .exp-timeline { padding-left: 1.4rem; }
+  .exp-dot { left: -1.78rem; }
+  .project-card, .skill-group, .availability-card { padding: 1.3rem; }
+  .contact-item { flex-direction: column; align-items: flex-start; gap: .15rem; }
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+  #scrollTop { bottom: 1rem; right: 1rem; }
 }
 </style>
 </head>
@@ -517,7 +594,10 @@ footer { border-top: 1px solid var(--border); padding: 1.8rem 0; }
   <div class="wrap">
     <nav>
       <div class="logo">Sairaj Khedekar</div>
-      <ul class="nav-links">
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
         <li><a href="#experience">Experience</a></li>
         <li><a href="#skills">Skills</a></li>
         <li><a href="#projects">Projects</a></li>
@@ -551,7 +631,7 @@ footer { border-top: 1px solid var(--border); padding: 1.8rem 0; }
       </div>
       <div class="hero-stats">
         <div class="stat-box">
-          <div class="stat-num">1.5+</div>
+          <div class="stat-num">2</div>
           <div class="stat-label">Years of experience</div>
         </div>
         <div class="stat-box">
@@ -884,6 +964,18 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 
 document.querySelectorAll(".exp-item").forEach(el => observer.observe(el));
+
+// Mobile menu
+const menuBtn = document.getElementById("menuToggle");
+const navLinks = document.getElementById("navLinks");
+function setMenu(open) {
+  navLinks.classList.toggle("open", open);
+  menuBtn.classList.toggle("open", open);
+  menuBtn.setAttribute("aria-expanded", open);
+}
+menuBtn.addEventListener("click", () => setMenu(!navLinks.classList.contains("open")));
+navLinks.querySelectorAll("a").forEach(a => a.addEventListener("click", () => setMenu(false)));
+window.addEventListener("resize", () => { if (window.innerWidth > 720) setMenu(false); });
 </script>
 </body>
 </html>
